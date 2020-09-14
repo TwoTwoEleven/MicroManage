@@ -2,16 +2,6 @@
 #include "MicroManageSelection.h"
 #include "MicroManageConfig.h"
 #include "MicroManageEquip.h"
-//#include "mod\ModHandler.h"
-//#include "mod\SemVersion.h"
-//#include "SatisfactoryModLoader.h"
-
-//void UMicroManageTransform::SomeFunc()
-//{
-	//FVersion Version = SML::GetModHandler().GetLoadedMod(TEXT("9cxELqcC1347T4")).ModInfo.Version;
-	//FString VersionString = SML::GetModHandler().GetLoadedMod(TEXT("9cxELqcC1347T4")).ModInfo.Version.String();
-	//FModContainer ModContainer;
-//}
 
 void UMicroManageTransform::TransformComponent(USceneComponent* SceneComp, const FTransform& Transform)
 {
