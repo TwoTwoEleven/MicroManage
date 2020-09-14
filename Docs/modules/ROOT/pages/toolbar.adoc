@@ -1,0 +1,3 @@
+## Micro Manage Toolbar
+
+You can bring up the Micro Manage Toolbar by pressing the Right Mouse Button (RMB) while the Micro Manager is equipped.  A significant amount of functionality is available through the toolbar which is explained below.  All functions on the toolbar are also able to be attached to a key combination

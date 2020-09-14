@@ -1,0 +1,84 @@
+= Micro Manage all. the. things.
+:description: Micro Manage allows you to adjust the position, rotation and size of objects in your factory with a wide variety of tools.
+
+Micro Manage is a mod for the factory building game, https://satisfactory.gamepedia.com/Satisfactory_Wiki[Satisfactory].
+
+Micro Manage allows you to adjust the position, rotation and size of objects in your factory with a wide suite of tools.
+
+***
+
+### Features
+
+* Multiplayer compatible
+* Move, rotate or resize items in your factory
+* Movement and rotation can be relative to the player view for easy usage
+* Perform operations on large groups of objects at the same time
+* Undo recent Micro Manage changes using Ctrl-Z
+* Repeat-while-pressed functionality for adjustments, selection and undo (configurable)
+* Power lines, recipes, inventories, paint color, deconstruct refund, pipette tool all preserved
+* Settings and Key/Mouse configurations are customizable
+* Move and rotate vehicle path nodes to fix any recording problems
+
+***
+
+## Documentation
+
+- https://github.com/TwoTwoEleven/MicroManage/wiki/Quick-Start-with-Micro-Manage[Quick Start with Micro Manage]
+- Basic Movements
+- Creating a group
+- Targets and Anchors
+- Undo
+- Detailed Tool Documentation
+- Tips and Tricks
+- Configuration Files
+- Examples
+- Known Issues
+- Future Stuff
+- Contacting the Author
+- Source code for Micro Manage
+
+***
+
+## How To Use
+
+* Unlock the Micro Manage milestone in the HUB (Tier 1)
+* Craft a Micro Manager device in the Equipment Workshop
+* Equip the Micro Manager device and a helpful set of notes will display
+* Point at a buildable object, such as a foundation, and hit one of the listed key combinations
+* Ctrl-Left Click will select an object (or multiple objects) so that you don't need to keep pointing at them
+* Ctrl-Alt-I will change the amount that each move, rotation, or scaling does
+
+***
+
+## Movement/Rotation Is Relative To Direction Player Is Facing
+
+Objects have a natural orientation (x, y, and z axis) that they will move and rotate with.  Commands on the horizontal plane (x and y axis) will be based on what direction you are facing.  For example move back/forth will always move an object away/towards the direction you are facing within the constraints of the object's natural orientation.
+
+***
+
+## Tips
+
+* You can use the dismantle tool (F) or unequip the Micro Manager to quickly deselect all objects.
+* Objects modified by Micro Manage maintain their modifications, even if the mod is no longer loaded.
+* If you are flying, you can use the Right-Alt key with Micro Manage to avoid key conflicts.
+* Configuration files are located in \<Satisfactory Game Folder>/configs (must run with mod installed first to create default config files).
+* For key/mouse names, see constants at bottom of https://docs.unrealengine.com/en-US/API/Runtime/InputCore/EKeys/index.html
+
+## Known Problems
+
+* Belts and pipes maintaining their connections still seem to be a bit glitchy.  It is recommended to try to connect belts and pipes after moving buildings for best results or at least make sure things are still working after adjustments are made.
+* Vehicles that are made larger or smaller can have unpredictable side effects when riding around in them and may even crash your game.  Make sure to save before playing around.
+* Getting in the way of objects that are moved or rotated can sometimes knock you (sometimes far) away.  This seems to only happen the first time you use Micro Manage during a game session.
+* The statues that you get from the AWESOME shop are not modifiable with this mod.  We recommend the Big Statues mod (https://ficsit.app/mod/EvreCbL2wrtpGG) for modifiable versions.
+
+## Snapping
+
+Foundations that are flat rotated (spin) should allow normal snapping in all directions.  Rotation in the Roll or Pitch directions will allow normal snapping in one direction but get a little funky in the other direction.  Snapping also does not perform very well on foundations that are grown or shrunken.
+
+## Stuff Being Worked On
+
+* Alignment, spacing, and other building tools
+* Cut, copy, and paste tools
+* Landscape (map content) editing tools
+* Machine monitoring and management tools
+

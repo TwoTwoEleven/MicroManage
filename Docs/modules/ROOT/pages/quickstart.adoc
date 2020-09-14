@@ -1,0 +1,9 @@
+## How To Use
+
+* Unlock the Micro Manage milestone in the HUB (Tier 1)
+* Craft a Micro Manager device in the Equipment Workshop
+* Equip the Micro Manager device and a helpful set of notes will display
+* Point at a buildable object, such as a foundation, and hit one of the listed key combinations
+* Ctrl-Left Click will select an object (or multiple objects) so that you don't need to keep pointing at them
+* Ctrl-Alt-I will change the amount that each move, rotation, or scaling does
+* Right Mouse Button will bring up the [Micro Manage Toolbar](https://github.com/TwoTwoEleven/MicroManage/wiki/Toolbar)

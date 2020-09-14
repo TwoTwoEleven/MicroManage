@@ -1,0 +1,5 @@
+name: micro-manage
+version: '0.0.1'
+title: Micro Manage
+nav:
+- modules/ROOT/nav.adoc
