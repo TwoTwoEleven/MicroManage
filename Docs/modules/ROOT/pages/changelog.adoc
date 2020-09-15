@@ -1,0 +1,141 @@
+= Changelog
+
+=== Version 0.9.2 - 15 Sep 2020
+
+Hotfix: Splitter output can now only be connected with Micro Manage to conveyor belt or lift inputs. This is to prevent a crash from a hard coded limitation of all types of splitters.
+
+Thank you, Deantendo and Carnaxus, for the bug reports.
+
+=== Version 0.9.1 - 13 Sep 2020
+
+Mass Selections and Connections
+
+* NEW: Select all items between Anchor and Target
+* NEW: Connect/Disconnect belts, pipes, tubes and tracks.
+* NEW: Toolbar and increment settings now saved to config file and reloaded on new game sessions
+* CHANGE: Target is now a brighter red to be more visible
+* FIXED: Crashes after entering/exiting vehicles and dying have been fixed
+
+==== NEW: Mass Select All Items Between Anchor and Target
+
+To mass select an area you need to define the Anchor (Shift-LMB) and Target (Shift-RMB) to be opposite corners of a "cube". Everything inside of that cube will be added to the current selection. Since this is additive you can perform multiple mass selections to build up the selection of a building or individually select/deselect items as normal. Undo (Ctrl-Z) will now undo a mass selection back to what it was prior in case the mass select did not select what you wanted.
+
+The sides of the "cube" will be based on the rotation of the Anchor and Target object sides so it doesn't have to be a perfectly square cube. The two mass select buttons determine whether the corners of the cube are based on the outside corners or the internal center points of the anchor and target. Items are selected if their internal centers are within the cube with a tolerance of 0.5 meters. This allows planar selections such as walls and floors to be more reliable without selecting items outside the tolerance.
+
+A warning was added of possible processing lag when attempting to move (using the Move function on the toolbar) large amounts of items (>500) over long distances (>100 meters). This is certainly possible/encouraged functionality but the game may appear to lock up while it recalculates the contents moving from one map tile to another. This could take several seconds or more depending on how much was moved and hardware speed.
+
+==== NEW: Connect/Disconnect Belts, Pipes, Tubes and Tracks
+
+You can now connect conveyor belts, fluid pipes, hyper tubes and railroad tracks to each other, even if they are not physically connected. The Anchor (Shift-LMB) defines the output connection and the Target (Shift-RMB) defines the input connection. For connections that are bidirectional it doesn't matter which is the Anchor or Target.
+
+In cases where more than one connection could apply the first available connection is used. If you don't want an open connection to be chosed, temporarily attach it to something before performing the connection. Since railroad tracks can have multiple connections (switches), the end with the least amount of connections is the one that is chosen.
+
+Connections between input or output connections on machines or storages can be directly hooked up to belts or pipes or even each other (i.e. storage to machine connection). If you want to disconnect two objects, select them as Anchor and Target and ALL connections between them will be unplugged (including ones that were connected normally). Directly connecting item storages to each other will not be limited to any belt speeds so you may achieve extremely high transfer speeds. While it doesn't appear to cause any problem at small scales, extreme usage of "unlimited beltless" connections may lead to game lag.
+
+This feature WILL allow for teleportation of items, fluids, players and trains over long distances with a few caveats:
+
+* Client players in a multiplayer game will die/crash if they attempt to enter a hypertube that teleports them a long distance. This appear to be a vanilla game problem so hopefully it gets fixed.
+* Long distance hyper tube connections should be placed within foundations and walls to keep from falling through landscape that won't have time to render.
+* Trains will teleport from the end of the first track to a center point between the track connections before continuing on to the other track. Do not be alarmed, quantum teleportation effects are hard to explain.
+
+
+
+=== Version 0.9.0 - 23 Aug 2020
+
+==== Huge update to Micro Manage functionality
+
+* Rotation and scaling of selections is now done as a group by default (define one of the selected itemas as an Anchor for more control)
+* An object can be defined to be the Anchor (green/Shift-LMB) or the Target (red/Shift-RMB) which changes how specific functions work
+* The new Micro Manage toolbar can be show using the Right Mouse Button (RMB)
+
+image:changelog/Toolbar.0.9.0.png[image]
+
+* Current Toolbar Functions
+    - Change selection to be treated as a group or ungrouped
+    - Change movement actions to be view relative or object based
+    - Change selection hologram style from opaque or transparent
+    - Set selection to the same rotation/scale/paint color as the defined Target
+    - Move selection from the defined Anchor to Target (work in progress)
+    - Start new selection, save/load selection
+    - Lock axes for scaling to stretch/squash items (work in progress)
+
+* Additional toolbar functions coming soon
+
+* Train platforms are now selectable (make sure to select the integrated track as well)
+
+* Toolbar functions can have a key assigned to them in the configuration file
+
+* Many, many other optimizations, compatibility fixes and enhancements
+
+=== Version 0.5.3 - 9 Jul 2020
+
+* Fixed loading of configuration files
+* Fixed false color changes on uncolored foundation ramps
+* Internal optimizations of movement operations
+
+=== Version 0.5.2 - 6 Jul 2020
+
+* Added debug information
+* Fixed hooking bug conflict (LightItUp and maybe others)
+
+=== Version 0.5.0 - 6 Jul 2020
+
+* Updated for SML 2.2.0
+* Some performance optimizations
+
+=== Version 0.4.1 - 24 Jun 2020
+
+* Fixed crash that would be caused when loading game saves with a Micro Manager equipped
+* Fixed movements and rotations to continue to be view relative when objects were inverted (upside down)
+* Fixed repeatable mouse buttons sometimes not being recognized as released if other keys were pressed at the same time
+
+=== Version 0.4.0 - 20 Jun 2020
+
+* For extra flexibility, ported 95% of Micro Manage into C++ (exception is any UI that will remain blueprints)
+* Ctrl-Z added for undo functionality
+* Ctrl-Alt-K will toggle the Info Clipboard into a smaller placeholder image
+* Added two configuration files for several settings and key/mouse configuration (files are located in /configs
+* For key/mouse names, see constants at bottom of https://docs.unrealengine.com/en-US/API/Runtime/InputCore/EKeys/index.html
+* Added mouse and keyboard repeat-while-pressed functionality (set in keyboard configuration file)
+* Vehicle path nodes can now be adjusted with Micro Manage
+
+=== Version 0.3.1 - 6 Jun 2020
+
+* You can now multi-select objects (Ctrl-LMB)
+* Movement/Rotation is now relative to direction the player is facing (see Mod description for more info)
+* Vehicles, lifts, poles, pipes, and belts are all now adjustable (see Known Problems for issues)
+* Growing/shrinking in multiplayer no longer has viewing threshold problems
+
+=== Version 0.3.0 - 1 Jun 2020
+
+Key parts of Micro Manage have been rewritten in C++ for greater functionality. Since this is a fairly major structural change it will need some testing and is marked as an ALPHA release. Multiplayer functionality should still be fully supported.
+
+* Buildable objects changed with Micro Manage:
+    - WILL NOW return items when they are deconstructed!
+    - CAN NOW be selected with the pipette tool!
+    - WILL NOT delete any inventory content!
+    - WILL NOT lose connections to things like belts, wires, and pipes! (mostly, see Known Problems)
+    - WILL NOT reset to default paint color!
+* Additionally, wires will update their visual connection to buildings as they are moved (belts and pipes are still left hanging visually)
+
+=== Version 0.2.1 - 28 May 2020
+
+* Changed mod description to be compatible with Early Access
+* Recipe settings on manufacturing buildings should now be preserved
+* Non-fluid storage and inventory content should now be preserved
+* Added railroad stations and platforms to the list of building types that will not be modifiable (the integrated track becomes detached and cannot be deleted)
+
+=== Version 0.2.0 - 25 May 2020
+
+* Added multiplayer support! There's a minor problem with shrink/grow being performed on clients. See mod page for more info.
+* Fixed invalid pose when equipping the Micro Manager
+
+=== Version 0.1.1 - 23 May 2020
+
+* Excluded certain incompatible building types from being managed (belts, pipes, tracks, poles and lifts)
+* Adjusted shrink amounts to exactly undo equivalent growth amounts
+* Fixed Ctrl-Alt-K so that it doesn't move buildings (functionality still to come)
+
+=== Version 0.1.0 - 23 May 2020
+
+- Initial Release
