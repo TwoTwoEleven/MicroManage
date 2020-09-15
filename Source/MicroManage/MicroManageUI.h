@@ -20,6 +20,8 @@
 #define BODY_CONNECTION_MADE "%s connection successful.\nAnchor:%s\nto\nTarget:%s"
 #define TITLE_CONNECTION_NOT_FOUND "Connection Error"
 #define BODY_CONNECTION_NOT_FOUND "No available connections found."
+#define TITLE_CONNECTION_ERROR_SPLITTER "Connection Error"
+#define BODY_CONNECTION_ERROR_SPLITTER "Splitter output can only be connected to converyor belts and lifts."
 #define TITLE_DISCONNECTION_MADE "Disconnection Success"
 #define BODY_DISCONNECTION_MADE "%d disconnection%s successful."
 

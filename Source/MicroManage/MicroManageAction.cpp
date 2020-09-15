@@ -6,6 +6,7 @@
 #include "MicroManageConfig.h"
 #include "MicroManageUI.h"
 #include "FGGameState.h"
+#include "FGBuildableAttachmentSplitter.h"
 #include "FGConnectionComponent.h"
 #include "FGBuildableConveyorBase.h"
 #include "FGFactoryConnectionComponent.h"
@@ -232,9 +233,15 @@ void UMicroManageAction::MakeConnection(AActor* OutputActor, AActor* InputActor,
 	if (OutputFactoryCxn) {
 		UFGFactoryConnectionComponent* InputFactoryCxn = GetAvailableFactoryCxn(false, InputActor);
 		if (InputFactoryCxn) {
-			OutputFactoryCxn->SetConnection(InputFactoryCxn);
-			Title = TEXT(TITLE_CONNECTION_MADE);
-			Body = FString::Printf(TEXT(BODY_CONNECTION_MADE), TEXT("Conveyor"), *OutputFactoryCxn->GetName(), *InputFactoryCxn->GetName());
+			if (OutputActor->IsA<AFGBuildableAttachmentSplitter>() && !InputActor->IsA<AFGBuildableConveyorBase>()) {
+				// Splitter output requires connection to a conveyor belt input.  Direct connection to any other input causes a crash.
+				Title = TEXT(TITLE_CONNECTION_ERROR_SPLITTER);
+				Body = TEXT(BODY_CONNECTION_ERROR_SPLITTER);
+			} else {
+				OutputFactoryCxn->SetConnection(InputFactoryCxn);
+				Title = TEXT(TITLE_CONNECTION_MADE);
+				Body = FString::Printf(TEXT(BODY_CONNECTION_MADE), TEXT("Conveyor"), *OutputFactoryCxn->GetName(), *InputFactoryCxn->GetName());
+			}
 			return;
 		}
 	}
