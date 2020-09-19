@@ -102,7 +102,7 @@ void UMicroManageConfiguration::LoadKeyConfigs()
 	// initialize default values and read in any existing configuration
 	MMKeyConfigs.ActionKeys.Empty();
 	MMKeyConfigs.DoNotEditConfigFormatVersion = "1.0";
-	ReadConfigIntoStruct(FILENAME_CONFIG, &MMKeyConfigs, MMKeyConfigs.StaticStruct());
+	ReadConfigIntoStruct(FILENAME_KEYS, &MMKeyConfigs, MMKeyConfigs.StaticStruct());
 
 	// use default values if wasn't loaded from the existing configuration
 	enum { NoAlt, Alt };
@@ -172,4 +172,14 @@ void UMicroManageConfiguration::NextIncrementSize()
 EIncrementSize UMicroManageConfiguration::CurrentIncrementSize()
 {
 	return MMConfig.IncrementSize;
+}
+
+FKey UMicroManageConfiguration::GetKeyForAction(EActionNameIdx ActionIndex)
+{
+	for (auto KeyConfig : MMKeyConfigs.ActionKeys) {
+		if (KeyConfig.ActionIndex = ActionIndex) {
+			return KeyConfig.Key;
+		}
+	}
+	return EKeys::Invalid;
 }

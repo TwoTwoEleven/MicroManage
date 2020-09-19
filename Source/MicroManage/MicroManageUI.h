@@ -45,6 +45,8 @@ private:
 	UUserWidget* CurrentWidget;
 
 public:
+	void ShowMessage(const FString& Message);
+
 	UFUNCTION()
 	void PopupClosed(bool ConfirmClicked);
 

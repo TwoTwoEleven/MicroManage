@@ -110,6 +110,10 @@ public:
 
 	EAxis::Type GetTransformAxis(const FVector& Loc, const FRotator& Rot);
 
+	// Returns the axis of Quat designated by Axis
+
+	FVector GetQuatAxis(EAxis::Type Axis, FQuat& Quat);
+
 	// Returns the location of Anchor if defined.  If Anchor is not defined then returns
 	// the calculated center of all selected objects.
 
@@ -154,7 +158,7 @@ public:
 	// Calculated the center and size of an actor's bounding box.  Size is local world values, not rotated world values.
 	void GetActorOriginAndSize(AActor* Actor, FVector& Origin, FVector& Size);
 
-	void AnchorTop();
+	void AlignToActor(AActor* Anchor, int Position, const EAxis::Type DesiredAxis);
 
 public:
 	FORCEINLINE ~UMicroManageTransform() = default;

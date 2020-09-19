@@ -1,4 +1,6 @@
 #include "MicroManageUI.h"
+#include "UI\FGGameUI.h"
+#include "UI\Message\FGMessageBase.h"
 #include "FGBlueprintFunctionLibrary.h"
 
 void UMicroManageUI::NextMMWidget()
@@ -37,12 +39,22 @@ void UMicroManageUI::ShowMMWidget()
 	}
 }
 
-void UMicroManageUI::PopupClosed(bool ConfirmClicked)
+// ShowMessage - temp popup to show info at bottom of UI without requiring user interaction (display length in seconds)
+// FGGameUI.h - AddPendingMessage?   FGMessageBase.h for message to add
+
+void UMicroManageUI::ShowMessage(const FString& Message)
 {
+//	AFGHUD* HUD = Cast<AFGHUD>(System->Controller->MyHUD);
+//	UFGGameUI* GameUI = HUD->GetGameUI();
+//	UFGMessageBase* Msg = NewObject<UFGMessageBase>();
+//	Msg->mTitle = FText::FromString("Title");
+//	GameUI->AddPendingMessage(Msg);
 }
 
-// ShowMessage - temp showing of info
-// FGGameUI.h - AddPendingMessage?   FGMessageBase.h for message to add
+void UMicroManageUI::PopupClosed(bool ConfirmClicked)
+{
+
+}
 
 void UMicroManageUI::ShowPopup(const FString& Title, const FString& Message)
 {

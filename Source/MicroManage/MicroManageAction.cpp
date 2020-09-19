@@ -107,7 +107,7 @@ void UMicroManageAction::MoveSelectionToTarget(bool IgnoreTranslation)
 	TransformData.Scale = FVector::OneVector;
 	TransformData.Anchor = System->Selection->AnchorActor;
 	TransformData.Target = System->Selection->TargetActor;
-	TransformData.GroupMode = System->Config->MMConfig.IsGrouped;
+	TransformData.GroupMode = true;
 	TransformData.ViewRelative = false;
 
 	float MoveDist = FVector::Dist2D(TransformData.Anchor->GetActorLocation(), TransformData.Target->GetActorLocation());

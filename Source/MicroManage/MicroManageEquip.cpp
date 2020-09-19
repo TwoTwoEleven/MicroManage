@@ -118,10 +118,14 @@ void AMicroManageEquip::MulticastTransformActors_Implementation(const TArray<AAc
 void AMicroManageEquip::MulticastUndoTransforms_Implementation(const FUndoInfo& UndoInfo)
 {
 	for (const auto& UndoComponent : UndoInfo.TransformComponents) {
-		System->Transform->TransformComponent(UndoComponent.Component, UndoComponent.Transform);
+		if (UndoComponent.Component->IsValidLowLevel()) {
+			System->Transform->TransformComponent(UndoComponent.Component, UndoComponent.Transform);
+		}
 	}
 	for (const auto& UndoActor : UndoInfo.TransformActors) {
-		System->Transform->TransformActor(UndoActor.Actor, UndoActor.Transform);
+		if (UndoActor.Actor->IsValidLowLevel()) {
+			System->Transform->TransformActor(UndoActor.Actor, UndoActor.Transform);
+		}
 	}
 }
 

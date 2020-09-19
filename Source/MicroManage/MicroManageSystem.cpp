@@ -92,6 +92,8 @@ void UMicroManageSystem::ExecuteAction(EActionNameIdx ActionIndex)
 	}
 
 	switch (ActionIndex) {
+		case EActionNameIdx::NoAction:
+			break;
 		case EActionNameIdx::SelectTarget:
 		case EActionNameIdx::DeselectTarget:
 			Action->SelectActor(Selection->LineTraceFromPlayer(), ActionIndex == EActionNameIdx::SelectTarget);

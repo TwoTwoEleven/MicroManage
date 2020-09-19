@@ -54,6 +54,15 @@ EAxis::Type UMicroManageTransform::GetTransformAxis(const FVector& Loc, const FR
 	}
 }
 
+FVector UMicroManageTransform::GetQuatAxis(EAxis::Type Axis, FQuat& Quat)
+{
+	switch (Axis) {
+		case EAxis::X: return Quat.GetAxisX();
+		case EAxis::Y: return Quat.GetAxisY();
+		default: return Quat.GetAxisZ();
+	}
+}
+
 FVector UMicroManageTransform::CalculatePivotLoc(const TArray<AActor*>& Actors, const AActor* Anchor, const AActor* Target)
 {
 	if (Anchor) { // pivot location set to anchor
@@ -127,7 +136,11 @@ void UMicroManageTransform::CalcViewAxis(const EAxis::Type DesiredAxis, const FV
 void UMicroManageTransform::CalculateSimplePivot(FMicroManageTransformData& TransformData)
 {
 	if (TransformData.IsRot || TransformData.IsLoc) {
-		TransformData.PivotAxis = CalcPivotAxis(TransformData.TransformAxis, TransformData.ViewVector, TransformData.AnchorQuat);
+		if (TransformData.ViewRelative) {
+			TransformData.PivotAxis = CalcPivotAxis(TransformData.TransformAxis, TransformData.ViewVector, TransformData.AnchorQuat);
+		} else {
+			TransformData.PivotAxis = GetQuatAxis(TransformData.TransformAxis, TransformData.AnchorQuat);
+		}
 	}
 	if (TransformData.IsRot) {
 		TransformData.PivotAngle = TransformData.Rot.GetComponentForAxis(TransformData.TransformAxis);
@@ -228,11 +241,60 @@ void UMicroManageTransform::GetActorOriginAndSize(AActor* Actor, FVector& Origin
 	Size = (LocalBox.Max - LocalBox.Min) * Actor->GetActorScale();
 }
 
-void UMicroManageTransform::AnchorTop()
+void UMicroManageTransform::AlignToActor(AActor* Anchor, int Position, const EAxis::Type Axis)
 {
-	if (!System->Selection->AnchorActor) {
+	if (!Anchor) {
 		return;
 	}
+
+	// Position >0 = Top, Left, Front
+	// Position 0 = Center, Center, Center
+	// Position <0 = Bottom, Right, Back
+
+	// Calculate plane from Actor based on it's current rotation, using Axis and Position
+	FVector Normal;
+	FVector Loc;
+	FVector AnchorOrigin;
+	FVector AnchorSize;
+	GetActorOriginAndSize(Anchor, AnchorOrigin, AnchorSize);
+	if (System->Config->MMConfig.IsViewBased) {
+		//CalcViewAxis(const EAxis::Type DesiredAxis, const FVector& ViewVector, const FQuat& ActorQuat, EAxis::Type& FoundAxis, bool& Inverted)
+		Normal = CalcPivotAxis(Axis, System->Manager->GetCameraViewVector(), Anchor->GetActorQuat());
+		//!!! use custom CalcPivotAxis (CalcViewAxis) that returns non-inverted Normal and Loc
+
+
+
+	} else {
+		Normal = Anchor->GetActorQuat().GetAxisZ();
+		//!!! Return natural axis of Anchor
+	}
+
+	FPlane AlignPlane = FPlane(Normal, AnchorOrigin);
+	// Adjust AlignPlane based on Position
+	if (Position > 0) {
+		AlignPlane.W += AnchorSize.X; // !!! use X, Y or Z
+	} else if (Position < 0) {
+
+	}
+
+
+
+	TArray<AActor*> Actors;
+	System->Selection->SelectedActorsNoTarget(Actors);
+	for (auto Actor : Actors) {
+		if (Actor == Anchor) {
+			continue;
+		}
+		// Calculate closest distance from other objects in selection to plane and then translate their position along that vector towards the plane
+		// This set of operations should be cached somehow and passed on to server to perform the transform
+
+		//!!!
+	}
+
+
+
+
+	/*
 	// calculate top plane for AnchorActor
 	FVector Normal;
 	FVector Loc;
@@ -246,6 +308,7 @@ void UMicroManageTransform::AnchorTop()
 
 
 	// move all other actors up or down (perpendicular to the alignment plane) so that their top is on the plane
-
-
+	*/
 }
+
+

@@ -6,7 +6,7 @@
 #include "FGBuildable.h"
 #include "MicroManageSystem.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum EIncrementSize
 {
 	Tiny		UMETA(DisplayName = "Tiny"),
@@ -15,9 +15,10 @@ enum EIncrementSize
 	Huge		UMETA(DisplayName = "Huge")
 };
 
-UENUM()
+UENUM(BlueprintType)
 enum EActionNameIdx
 {
+	NoAction			UMETA(DisplayName = "No Action"),
 	SelectTarget		UMETA(DisplayName = "Select Target"),
 	DeselectTarget		UMETA(DisplayName = "Deselect Target"),
 	Undo				UMETA(DisplayName = "Undo"),

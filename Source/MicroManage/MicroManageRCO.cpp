@@ -86,8 +86,10 @@ void UMicroManageRCO::ServerUndoAction_Implementation(AMicroManageEquip* Equip, 
 		// get all connected wires while on server
 		TArray<AFGBuildableWire*> Wires;
 		for (const auto& UndoActor : UndoInfo.TransformActors) {
-			for (auto CircuitCxnComp : UndoActor.Actor->GetComponentsByClass(UFGCircuitConnectionComponent::StaticClass())) {
-				Cast<UFGCircuitConnectionComponent>(CircuitCxnComp)->GetWires(Wires);
+			if (UndoActor.Actor->IsValidLowLevel()) {
+				for (auto CircuitCxnComp : UndoActor.Actor->GetComponentsByClass(UFGCircuitConnectionComponent::StaticClass())) {
+					Cast<UFGCircuitConnectionComponent>(CircuitCxnComp)->GetWires(Wires);
+				}
 			}
 		}
 		RemoveDuplicateWires(Wires);

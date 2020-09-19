@@ -186,6 +186,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Micro Manage")
 	EIncrementSize CurrentIncrementSize();
 
+	UFUNCTION(BlueprintCallable, Category = "Micro Manage")
+	FKey GetKeyForAction(EActionNameIdx ActionIndex);
+
 public:
 	FORCEINLINE ~UMicroManageConfiguration() = default;
 };
