@@ -21,19 +21,18 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	AFGCharacterPlayer* ActiveCharacter;
-	AFGPlayerController* ActiveController;
 private:
 	UMicroManageSystem* System;
+
 	bool ManagerEquipped = false;
 
-protected:
-	void MicroManageEquip();
-	void MicroManageUnEquip();
+	void SetupMicroManageSystem();
 
 public:
+	bool IsLocal = false;
+
 	UFUNCTION(Reliable, NetMulticast, Category = "Micro Manage")
-	void MulticastShowPopup(AMicroManageEquip* Equip, const FString& Title, const FString& Body);
+	void MulticastShowPopup(const FGuid& Id, const FString& Title, const FString& Body);
 
 	UFUNCTION(Reliable, NetMulticast, Category = "Micro Manage")
 	void MulticastTransformActors(const TArray<AActor*>& Actors, FMicroManageTransformData TransformData);
@@ -45,16 +44,11 @@ public:
 	void MulticastRefreshMaterials(const TArray<AActor*>& Actors);
 
 	UFUNCTION(Reliable, NetMulticast, Category = "Micro Manage")
-	void MulticastEquip(AFGCharacterPlayer* Character, AMicroManageEquip* Equipment);
-
-	UFUNCTION(Reliable, NetMulticast, Category = "Micro Manage")
-	void MulticastUnEquip(AMicroManageEquip* Equip);
+	void MulticastUnEquip();
 
 	virtual void Equip(AFGCharacterPlayer* Character) override;
 
 	virtual void UnEquip() override;
-
-	FVector GetCameraViewVector();
 
 public:
 	FORCEINLINE ~AMicroManageEquip() = default;

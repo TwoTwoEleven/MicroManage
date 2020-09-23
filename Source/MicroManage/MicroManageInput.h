@@ -13,6 +13,8 @@ class MICROMANAGE_API UMicroManageInput : public UMicroManageComponent
 private:
 	TMap<FKey, FTimerHandle> KeyTimerHandleMap;
 
+	AMicroManageEquip* Equip;
+
 	void SetupKeyBinding(FMicroManageKeyConfig KeyConfig, EInputEvent InputEvent);
 
 	void SetupInputComponent();
@@ -22,7 +24,7 @@ private:
 	void PerformIndexedAction(FKey Key, EActionNameIdx ActionIndex, EInputEvent InputEvent);
 
 public:
-	void Attach();
+	void Attach(AMicroManageEquip* Equipment);
 
 	void Detach();
 

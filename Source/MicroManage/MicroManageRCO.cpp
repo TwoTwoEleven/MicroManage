@@ -1,6 +1,7 @@
 #include "MicroManageRCO.h"
 #include "MicroManageSystem.h"
 #include "MicroManageAction.h"
+#include "MicroManageSelection.h"
 #include "SML/util/Logging.h"
 #include "Net/UnrealNetwork.h"
 #include "FGBuildableWire.h"
@@ -53,7 +54,7 @@ void UMicroManageRCO::ProcessWires(const TArray<AFGBuildableWire*>& Wires)
 	}
 }
 
-void UMicroManageRCO::ServerTransformActors_Implementation(AMicroManageEquip* Equip, const TArray<AActor*>& Actors, FMicroManageTransformData TransformData)
+void UMicroManageRCO::ServerTransformActors_Implementation(const TArray<AActor*>& Actors, FMicroManageTransformData TransformData)
 {
 	// get all connected wires
 	TArray<AFGBuildableWire*> Wires;
@@ -65,18 +66,18 @@ void UMicroManageRCO::ServerTransformActors_Implementation(AMicroManageEquip* Eq
 	RemoveDuplicateWires(Wires);
 
 	// process the transform across all actors
-	Equip->MulticastTransformActors(Actors, TransformData);
+	UMicroManageSystem::Get()->GetEquip()->MulticastTransformActors(Actors, TransformData);
 
 	// update the wire positions attached to all the actors
 	ProcessWires(Wires);
 }
 
-bool UMicroManageRCO::ServerTransformActors_Validate(AMicroManageEquip* Equip, const TArray<AActor*>& Actors, FMicroManageTransformData TransformData)
+bool UMicroManageRCO::ServerTransformActors_Validate(const TArray<AActor*>& Actors, FMicroManageTransformData TransformData)
 {
 	return true;
 }
 
-void UMicroManageRCO::ServerUndoAction_Implementation(AMicroManageEquip* Equip, const FUndoInfo& UndoInfo)
+void UMicroManageRCO::ServerUndoAction_Implementation(const FUndoInfo& UndoInfo)
 {
 	if (UndoInfo.ColorSlotItems.Num() > 0) {
 		for (const auto& UndoItem : UndoInfo.ColorSlotItems) {
@@ -95,23 +96,23 @@ void UMicroManageRCO::ServerUndoAction_Implementation(AMicroManageEquip* Equip, 
 		RemoveDuplicateWires(Wires);
 
 		// process the reverse transform across all undo items
-		Equip->MulticastUndoTransforms(UndoInfo);
+		UMicroManageSystem::Get()->GetEquip()->MulticastUndoTransforms(UndoInfo);
 
 		// update the wire positions attached to all the undo items while on server
 		ProcessWires(Wires);
 	}
 }
 
-bool UMicroManageRCO::ServerUndoAction_Validate(AMicroManageEquip* Equip, const FUndoInfo& UndoInfo)
+bool UMicroManageRCO::ServerUndoAction_Validate(const FUndoInfo& UndoInfo)
 {
 	return true;
 }
 
-void UMicroManageRCO::ServerPrepareActors_Implementation(AMicroManageEquip* Equip, const TArray<AActor*>& Actors)
+void UMicroManageRCO::ServerPrepareActors_Implementation(const TArray<AActor*>& Actors)
 {
 	// make all characters fly
 	TArray<TTuple<ACharacter*, EMovementMode>> CharacterInfo;
-	for (FConstPlayerControllerIterator Iterator = Equip->GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator) {
+	for (FConstPlayerControllerIterator Iterator = UMicroManageSystem::Get()->GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator) {
 		ACharacter* Character = Iterator->Get()->GetCharacter();
 		UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement();
 		auto MovementMode = CharacterMovement->MovementMode;
@@ -154,10 +155,10 @@ void UMicroManageRCO::ServerPrepareActors_Implementation(AMicroManageEquip* Equi
 	}
 
 	// multi-cast out to all characters to redraw any changed objects
-	Equip->MulticastRefreshMaterials(Actors);
+	UMicroManageSystem::Get()->GetEquip()->MulticastRefreshMaterials(Actors);
 }
 
-bool UMicroManageRCO::ServerPrepareActors_Validate(AMicroManageEquip* Equip, const TArray<AActor*>& Actors)
+bool UMicroManageRCO::ServerPrepareActors_Validate(const TArray<AActor*>& Actors)
 {
 	return true;
 }
@@ -178,7 +179,7 @@ bool UMicroManageRCO::ServerPaintActors_Validate(const TArray<AActor*>& Actors, 
 	return true;
 }
 
-void UMicroManageRCO::ServerHandleConnect_Implementation(AMicroManageEquip* Equip, bool IsConnection, AActor* OutputActor, AActor* InputActor)
+void UMicroManageRCO::ServerHandleConnect_Implementation(const FGuid& Id, bool IsConnection, AActor* OutputActor, AActor* InputActor)
 {
 	FString Title;
 	FString Body;
@@ -187,10 +188,10 @@ void UMicroManageRCO::ServerHandleConnect_Implementation(AMicroManageEquip* Equi
 	} else {
 		UMicroManageSystem::Get()->Action->BreakConnection(OutputActor, InputActor, Title, Body);
 	}
-	Equip->MulticastShowPopup(Equip, Title, Body);
+	UMicroManageSystem::Get()->GetEquip()->MulticastShowPopup(Id, Title, Body);
 }
 
-bool UMicroManageRCO::ServerHandleConnect_Validate(AMicroManageEquip* Equip, bool IsConnection, AActor* OutputActor, AActor* InputActor)
+bool UMicroManageRCO::ServerHandleConnect_Validate(const FGuid& Id, bool IsConnection, AActor* OutputActor, AActor* InputActor)
 {
 	return true;
 }

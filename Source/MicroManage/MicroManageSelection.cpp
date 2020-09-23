@@ -192,7 +192,7 @@ void UMicroManageSelection::RefreshMaterial(AActor* Actor)
 {
 	// hack to refresh static mesh - This is needed for power indicators and meshes to update properly.
 	if (!Contains(Actor)) {
-		auto OutlineComp = UFGOutlineComponent::Get(System->Manager->GetWorld());
+		auto OutlineComp = UFGOutlineComponent::Get(Actor->GetWorld());
 		OutlineComp->ShowDismantlePendingMaterial(Actor);
 		OutlineComp->HideAllDismantlePendingMaterial();
 		// reset color slot for this actor (e.g. for buggy ramps)
@@ -297,7 +297,6 @@ bool UMicroManageSelection::Contains(AActor* Actor)
 {
 	return SelectedMap.Contains(Actor);
 }
-
 
 int UMicroManageSelection::SelectCount()
 {
@@ -464,12 +463,12 @@ void UMicroManageSelection::LoadSelection()
 
 AActor* UMicroManageSelection::LineTraceFromPlayer()
 {
-	FVector Start = System->Controller->PlayerCameraManager->GetCameraLocation();
-	FVector End = Start + (System->Controller->PlayerCameraManager->GetActorForwardVector() *
+	FVector Start = System->GetLocalController()->PlayerCameraManager->GetCameraLocation();
+	FVector End = Start + (System->GetLocalController()->PlayerCameraManager->GetActorForwardVector() *
 		(System->Config->MMConfig.MaxTargetRangeMeters * 100.0));
 	FHitResult HitResult;
-	FCollisionQueryParams TraceParams(TEXT("MMTrace"), false, System->Character);
-	if (System->Character->GetWorld()->
+	FCollisionQueryParams TraceParams(TEXT("MMTrace"), false, System->GetLocalController()->GetPawn());
+	if (System->GetWorld()->
 		LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams)) {
 		return HitResult.GetActor();
 	}

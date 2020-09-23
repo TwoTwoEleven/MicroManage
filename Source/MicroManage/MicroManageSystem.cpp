@@ -12,20 +12,87 @@ UMicroManageSystem* UMicroManageSystem::Get()
 {
 	if (!MicroManageSystemSingleton) {
 		MicroManageSystemSingleton = NewObject<UMicroManageSystem>();
-		// force persistence of UMicroManageSystem object
-		((UGameEngine*)GEngine)->GameInstance->RegisterReferencedObject(MicroManageSystemSingleton);
-		MicroManageSystemSingleton->ID = FMath::Rand();
-
-		// Init all components
-		MicroManageSystemSingleton->Transform = InitComponent<UMicroManageTransform>();
-		MicroManageSystemSingleton->Selection = InitComponent<UMicroManageSelection>();
-		MicroManageSystemSingleton->Undo = InitComponent<UMicroManageUndo>();
-		MicroManageSystemSingleton->Config = InitComponent<UMicroManageConfiguration>();
-		MicroManageSystemSingleton->UI = InitComponent<UMicroManageUI>();
-		MicroManageSystemSingleton->Action = InitComponent<UMicroManageAction>();
-		MicroManageSystemSingleton->Input = InitComponent<UMicroManageInput>();
+		MicroManageSystemSingleton->SystemId = FGuid::NewGuid();
+		MicroManageSystemSingleton->Initialize(((UGameEngine*)GEngine)->GameInstance);
 	}
 	return MicroManageSystemSingleton;
+}
+
+void UMicroManageSystem::Initialize(UGameInstance* GameInstance)
+{
+	// force persistence of UMicroManageSystem object
+	GameInstance->RegisterReferencedObject(this);
+	CurrentWorld = GameInstance->GetWorld();
+
+	// Init all components
+	Transform = InitComponent<UMicroManageTransform>();
+	Selection = InitComponent<UMicroManageSelection>();
+	Undo = InitComponent<UMicroManageUndo>();
+	Config = InitComponent<UMicroManageConfiguration>();
+	UI = InitComponent<UMicroManageUI>();
+	Action = InitComponent<UMicroManageAction>();
+	Input = InitComponent<UMicroManageInput>();
+}
+
+UMicroManageRCO* UMicroManageSystem::GetMMRCO()
+{
+	if (!MMRCO) {
+		MMRCO = Cast<UMicroManageRCO>(GetLocalController()->GetRemoteCallObjectOfClass(UMicroManageRCO::StaticClass()));
+	}
+	return MMRCO;
+}
+
+AMicroManageEquip* UMicroManageSystem::GetEquip()
+{
+	for (AMicroManageEquip* Equip : ActiveEquipment) {
+		if (Equip->IsLocal) {
+			return Equip;
+		}
+	}
+	return ActiveEquipment[0];
+}
+
+void UMicroManageSystem::AddActiveEquipment(AMicroManageEquip* Equip)
+{
+	if (!ActiveEquipment.Contains(Equip)) {
+		ActiveEquipment.Emplace(Equip);
+	}
+}
+
+void UMicroManageSystem::RemoveActiveEquipment(AMicroManageEquip* Equip)
+{
+	if (ActiveEquipment.Contains(Equip)) {
+		ActiveEquipment.Remove(Equip);
+	}
+}
+
+UWorld* UMicroManageSystem::GetWorld() const
+{
+	return CurrentWorld;
+}
+
+AFGPlayerController* UMicroManageSystem::GetLocalController()
+{
+	if (!LocalController) {
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator) {
+			if (Iterator->Get()->IsLocalPlayerController()) {
+				LocalController = Cast<AFGPlayerController>(Iterator->Get());
+				break;
+			}
+		}
+	}
+	return LocalController;
+}
+
+bool UMicroManageSystem::IsIdMatch(const FGuid& CheckId)
+{
+	return ((CheckId.A == SystemId.A) && (CheckId.B == SystemId.B) && (CheckId.C == SystemId.C) && (CheckId.D == SystemId.D));
+}
+
+FVector UMicroManageSystem::GetCameraViewVector()
+{
+	FVector CameraVector = GetLocalController()->PlayerCameraManager->GetCameraRotation().Vector();
+	return FVector(CameraVector.X, CameraVector.Y, 0.f).GetSafeNormal(); // flatten and normalize
 }
 
 void UMicroManageSystem::BasicTransform(EActionNameIdx ActionIndex)
@@ -193,10 +260,10 @@ void UMicroManageSystem::ExecuteAction(EActionNameIdx ActionIndex)
 			break;
 
 		case EActionNameIdx::Connect:
-			MMRCO->ServerHandleConnect(Manager, true, Selection->AnchorActor, Selection->TargetActor);
+			GetMMRCO()->ServerHandleConnect(SystemId, true, Selection->AnchorActor, Selection->TargetActor);
 			break;
 		case EActionNameIdx::Disconnect:
-			MMRCO->ServerHandleConnect(Manager, false, Selection->AnchorActor, Selection->TargetActor);
+			GetMMRCO()->ServerHandleConnect(SystemId, false, Selection->AnchorActor, Selection->TargetActor);
 			break;
 
 		case EActionNameIdx::SelectBoxSides:

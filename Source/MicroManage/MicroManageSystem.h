@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "SML/util/Logging.h"
 #include "FGPlayerController.h"
+#include "FGPlayerState.h"
 #include "FGBuildable.h"
 #include "MicroManageSystem.generated.h"
 
@@ -98,11 +99,48 @@ class MICROMANAGE_API UMicroManageSystem : public UObject
 	GENERATED_BODY()
 
 private:
-	static UMicroManageSystem* MicroManageSystemSingleton;
+	TArray<AMicroManageEquip*> ActiveEquipment;
+
+	AFGPlayerController* LocalController;
+
+	UWorld* CurrentWorld;
+
+	UMicroManageRCO* MMRCO;
+
+	UFUNCTION()
+	void Initialize(UGameInstance* GameInstance);
 
 public:
+	static UMicroManageSystem* MicroManageSystemSingleton;
+
+	FGuid SystemId;
+
 	UFUNCTION(BlueprintCallable, Category = "Micro Manage")
 	static UMicroManageSystem* Get();
+
+	UFUNCTION()
+	AMicroManageEquip* GetEquip();
+
+	UFUNCTION()
+	void AddActiveEquipment(AMicroManageEquip* Equip);
+
+	UFUNCTION()
+	void RemoveActiveEquipment(AMicroManageEquip* Equip);
+
+	UFUNCTION()
+	UMicroManageRCO* GetMMRCO();
+
+	UFUNCTION()
+	AFGPlayerController* GetLocalController();
+
+	UFUNCTION()
+	UWorld* GetWorld() const override;
+
+	UFUNCTION()
+	bool IsIdMatch(const FGuid& CheckId);
+
+	UFUNCTION()
+	FVector GetCameraViewVector();
 
 public: // Components =============================================================================
 	UPROPERTY(BlueprintReadOnly, Category = "Micro Manage Component")
@@ -125,13 +163,6 @@ public: // Components ==========================================================
 
 	UPROPERTY(BlueprintReadOnly, Category = "Micro Manage Component")
 	class UMicroManageInput* Input;
-
-public: // System Access Properties ===============================================================
-	AFGPlayerController* Controller;
-	AFGCharacterPlayer* Character;
-	AMicroManageEquip* Manager;
-	UMicroManageRCO* MMRCO;
-	int ID;
 
 private:
 	void BasicTransform(EActionNameIdx ActionIndex);

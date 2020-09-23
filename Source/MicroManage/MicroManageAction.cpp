@@ -39,7 +39,7 @@ void UMicroManageAction::PerformUndo()
 				Idx++;
 			}
 		} else {
-			System->MMRCO->ServerUndoAction(System->Manager, UndoInfo);
+			System->GetMMRCO()->ServerUndoAction(UndoInfo);
 		}
 		UndoInfo.Clear();
 	}
@@ -74,7 +74,7 @@ void UMicroManageAction::PrepareTransform(const FVector& Loc, const FRotator& Ro
 	TransformData.GroupMode = System->Config->MMConfig.IsGrouped;
 	TransformData.ViewRelative = System->Config->MMConfig.IsViewBased;
 	if (TransformData.ViewRelative) {
-		TransformData.ViewVector = System->Manager->GetCameraViewVector();
+		TransformData.ViewVector = System->GetCameraViewVector();
 	}
 	if (TransformData.GroupMode) {
 		TransformData.PivotLoc = System->Transform->CalculatePivotLoc(Actors, TransformData.Anchor, TransformData.Target);
@@ -82,7 +82,7 @@ void UMicroManageAction::PrepareTransform(const FVector& Loc, const FRotator& Ro
 	System->Transform->CalculateTransformData(TransformData);
 
 	// call server TransformItem to be broadcast to all clients
-	System->MMRCO->ServerTransformActors(System->Manager, Actors, TransformData);
+	System->GetMMRCO()->ServerTransformActors(Actors, TransformData);
 }
 
 void UMicroManageAction::MoveSelectionToTarget(bool IgnoreTranslation)
@@ -128,7 +128,7 @@ void UMicroManageAction::MoveSelectionToTarget(bool IgnoreTranslation)
 	TransformData.SetSame = true;
 
 	// call server TransformItem to be broadcast to all clients
-	System->MMRCO->ServerTransformActors(System->Manager, Actors, TransformData);
+	System->GetMMRCO()->ServerTransformActors(Actors, TransformData);
 }
 
 void UMicroManageAction::MakeActorsMovable(TArray<AActor*>& Actors)
@@ -148,7 +148,7 @@ void UMicroManageAction::MakeActorsMovable(TArray<AActor*>& Actors)
 
 	// prepare applicable actors on the server
 	if (ActorsToPrepare.Num() > 0) {
-		System->MMRCO->ServerPrepareActors(System->Manager, ActorsToPrepare);
+		System->GetMMRCO()->ServerPrepareActors(ActorsToPrepare);
 	}
 }
 
@@ -309,7 +309,7 @@ void UMicroManageAction::MakeConnection(AActor* OutputActor, AActor* InputActor,
 			auto OutputFluidPipeCxn = Cast<UFGPipeConnectionComponent>(OutputPipeCxn);
 			auto InputFluidPipeCxn = Cast<UFGPipeConnectionComponent>(InputPipeCxn);
 			if (OutputFluidPipeCxn && InputFluidPipeCxn) {
-				AFGPipeSubsystem* PipeSubsystem = AFGPipeSubsystem::Get(System->Manager->GetWorld());
+				AFGPipeSubsystem* PipeSubsystem = AFGPipeSubsystem::Get(System->GetWorld());
 				int32 OutputNetworkID = OutputFluidPipeCxn->GetPipeNetworkID();
 				int32 InputNetworkID = InputFluidPipeCxn->GetPipeNetworkID();
 				if (OutputNetworkID != InputNetworkID) { // merge and rebuild pipe networks
@@ -380,7 +380,7 @@ void UMicroManageAction::BreakConnection(AActor* OutputActor, AActor* InputActor
 					auto OutputFluidPipeCxn = Cast<UFGPipeConnectionComponent>(OutputPipeCxn);
 					auto InputFluidPipeCxn = Cast<UFGPipeConnectionComponent>(InputPipeCxn);
 					if (OutputFluidPipeCxn && InputFluidPipeCxn) {
-						AFGPipeSubsystem* PipeSubsystem = AFGPipeSubsystem::Get(System->Manager->GetWorld());
+						AFGPipeSubsystem* PipeSubsystem = AFGPipeSubsystem::Get(System->GetWorld());
 						PipeSubsystem->FindPipeNetwork(OutputFluidPipeCxn->GetPipeNetworkID())->MarkForFullRebuild();;
 						PipeSubsystem->FindPipeNetwork(InputFluidPipeCxn->GetPipeNetworkID())->MarkForFullRebuild();;
 					}
@@ -462,5 +462,5 @@ void UMicroManageAction::SetSamePaint()
 	System->Undo->PushUndoColorSlot(Actors);
 
 	// paint all buildables on server to propogate out to clients
-	System->MMRCO->ServerPaintActors(Actors, TargetBuildable->GetColorSlot_Implementation());
+	System->GetMMRCO()->ServerPaintActors(Actors, TargetBuildable->GetColorSlot_Implementation());
 }

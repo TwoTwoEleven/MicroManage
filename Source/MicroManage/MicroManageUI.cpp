@@ -32,7 +32,7 @@ void UMicroManageUI::ShowMMWidget()
 		break;
 	}
 	if (UClass* locWidgetClass = WidgetClassReference.TryLoadClass<UUserWidget>()) {
-		CurrentWidget = CreateWidget<UUserWidget>(System->Controller->GetGameInstance(), locWidgetClass);
+		CurrentWidget = CreateWidget<UUserWidget>(System->GetLocalController()->GetGameInstance(), locWidgetClass);
 		if (CurrentWidget) {
 			CurrentWidget->AddToViewport(-1);
 		}
@@ -60,7 +60,7 @@ void UMicroManageUI::ShowPopup(const FString& Title, const FString& Message)
 {
 	FPopupClosed ClosedDelagate;
 	ClosedDelagate.BindUFunction(this, "PopupClosed");
-	UFGBlueprintFunctionLibrary::AddPopupWithCloseDelegate(System->Controller, 
+	UFGBlueprintFunctionLibrary::AddPopupWithCloseDelegate(System->GetLocalController(), 
 		FText::FromString(Title), FText::FromString(Message), ClosedDelagate, EPopupId::PID_OK);
 }
 
@@ -68,7 +68,7 @@ void UMicroManageUI::ShowConfirm(const FString& Title, const FString& Message, U
 {
 	FPopupClosed ClosedDelagate;
 	ClosedDelagate.BindUFunction(Object, FuncName);
-	UFGBlueprintFunctionLibrary::AddPopupWithCloseDelegate(System->Controller, 
+	UFGBlueprintFunctionLibrary::AddPopupWithCloseDelegate(System->GetLocalController(), 
 		FText::FromString(Title), FText::FromString(Message), ClosedDelagate, EPopupId::PID_OK_CANCEL);
 }
 
@@ -81,7 +81,7 @@ void UMicroManageUI::ShowToolsUI()
 {
 	FStringClassReference WidgetClassReference = FStringClassReference(TEXT(TOOLBAR_WIDGET_CLASS));
 	if (UClass* WidgetClass = WidgetClassReference.TryLoadClass<UUserWidget>()) {
-		AFGHUD* HUD = Cast<AFGHUD>(System->Controller->MyHUD);
+		AFGHUD* HUD = Cast<AFGHUD>(System->GetLocalController()->MyHUD);
 		if (HUD->IsValidLowLevel()) {
 			HUD->OpenInteractUI(WidgetClass, System);
 		}

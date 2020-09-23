@@ -6,7 +6,7 @@
 void UMicroManageInput::ClearAllKeyTimers()
 {
 	for (auto& KeyTimer : KeyTimerHandleMap) {
-		System->Manager->GetWorldTimerManager().ClearTimer(KeyTimer.Value);
+		Equip->GetWorldTimerManager().ClearTimer(KeyTimer.Value);
 	}
 	KeyTimerHandleMap.Empty();
 }
@@ -31,7 +31,7 @@ void UMicroManageInput::SetupKeyBinding(FMicroManageKeyConfig KeyConfig, EInputE
 					PerformIndexedAction(KeyConfig.Key, KeyConfig.ActionIndex, EInputEvent::IE_Repeat);
 				});
 				FTimerHandle TimerHandle;
-				System->Manager->GetWorldTimerManager().SetTimer(TimerHandle, TimerCallback, 0.1, true, 0.5);
+				Equip->GetWorldTimerManager().SetTimer(TimerHandle, TimerCallback, 0.1, true, 0.5);
 				KeyTimerHandleMap.Add(KeyConfig.Key, TimerHandle);
 			}
 			PerformIndexedAction(Key, KeyConfig.ActionIndex, InputEvent);
@@ -42,15 +42,15 @@ void UMicroManageInput::SetupKeyBinding(FMicroManageKeyConfig KeyConfig, EInputE
 			PerformIndexedAction(Key, KeyConfig.ActionIndex, InputEvent);
 		});
 	}
-	System->Manager->InputComponent->KeyBindings.Add(KeyBinding);
+	Equip->InputComponent->KeyBindings.Add(KeyBinding);
 }
 
 void UMicroManageInput::SetupInputComponent()
 {
-	if (System->Manager->InputComponent) {
+	if (Equip->InputComponent) {
 		return;
 	}
-	System->Manager->InputComponent = NewObject<UInputComponent>();
+	Equip->InputComponent = NewObject<UInputComponent>();
 
 	for (const auto& ThisKey : System->Config->MMKeyConfigs.ActionKeys) {
 		if (ThisKey.Key == EKeys::Invalid) {
@@ -74,7 +74,7 @@ void UMicroManageInput::PerformIndexedAction(FKey Key, EActionNameIdx ActionInde
 	// remove timer if the key has been released
 	if (InputEvent == EInputEvent::IE_Released) {
 		if (KeyTimerHandleMap.Contains(Key)) {
-			System->Manager->GetWorldTimerManager().ClearTimer(KeyTimerHandleMap[Key]);
+			Equip->GetWorldTimerManager().ClearTimer(KeyTimerHandleMap[Key]);
 			KeyTimerHandleMap.Remove(Key);
 		}
 		return;
@@ -82,8 +82,8 @@ void UMicroManageInput::PerformIndexedAction(FKey Key, EActionNameIdx ActionInde
 
 	// check to see if Key is actually pressed for an existing timer and remove it if it's not
 	if (InputEvent == EInputEvent::IE_Repeat) { 
-		if (KeyTimerHandleMap.Contains(Key) && !System->Controller->IsInputKeyDown(Key)) {
-			System->Manager->GetWorldTimerManager().ClearTimer(KeyTimerHandleMap[Key]);
+		if (KeyTimerHandleMap.Contains(Key) && !System->GetLocalController()->IsInputKeyDown(Key)) {
+			Equip->GetWorldTimerManager().ClearTimer(KeyTimerHandleMap[Key]);
 			KeyTimerHandleMap.Remove(Key);
 			return;
 		}
@@ -92,14 +92,16 @@ void UMicroManageInput::PerformIndexedAction(FKey Key, EActionNameIdx ActionInde
 	System->ExecuteAction(ActionIndex);
 }
 
-void UMicroManageInput::Attach()
+void UMicroManageInput::Attach(AMicroManageEquip* Equipment)
 {
+	Equip = Equipment;
 	SetupInputComponent();
-	System->Controller->PushInputComponent(System->Manager->InputComponent);
+	System->GetLocalController()->PushInputComponent(Equip->InputComponent);
 }
 
 void UMicroManageInput::Detach()
 {
 	ClearAllKeyTimers();
-	System->Controller->PopInputComponent(System->Manager->InputComponent);
+	System->GetLocalController()->PopInputComponent(Equip->InputComponent);
+	Equip = nullptr;
 }

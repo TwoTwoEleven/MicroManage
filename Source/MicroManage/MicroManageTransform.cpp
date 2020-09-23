@@ -259,7 +259,7 @@ void UMicroManageTransform::AlignToActor(AActor* Anchor, int Position, const EAx
 	GetActorOriginAndSize(Anchor, AnchorOrigin, AnchorSize);
 	if (System->Config->MMConfig.IsViewBased) {
 		//CalcViewAxis(const EAxis::Type DesiredAxis, const FVector& ViewVector, const FQuat& ActorQuat, EAxis::Type& FoundAxis, bool& Inverted)
-		Normal = CalcPivotAxis(Axis, System->Manager->GetCameraViewVector(), Anchor->GetActorQuat());
+		Normal = CalcPivotAxis(Axis, System->GetCameraViewVector(), Anchor->GetActorQuat());
 		//!!! use custom CalcPivotAxis (CalcViewAxis) that returns non-inverted Normal and Loc
 
 
@@ -300,7 +300,7 @@ void UMicroManageTransform::AlignToActor(AActor* Anchor, int Position, const EAx
 	FVector Loc;
 	if (System->Config->MMConfig.IsViewBased) {
 		//CalcViewAxis(const EAxis::Type DesiredAxis, const FVector& ViewVector, const FQuat& ActorQuat, EAxis::Type& FoundAxis, bool& Inverted)
-		Normal = CalcPivotAxis(EAxis::Z, System->Manager->GetCameraViewVector(), System->Selection->AnchorActor->GetActorQuat());
+		Normal = CalcPivotAxis(EAxis::Z, System->GetCameraViewVector(), System->Selection->AnchorActor->GetActorQuat());
 	} else {
 		Normal = System->Selection->AnchorActor->GetActorQuat().GetAxisZ();
 	}
