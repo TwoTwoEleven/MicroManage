@@ -26,3 +26,13 @@ Documentation is being created currently and will be available at https://ficsit
 ## Contacting the Author
 
 The easiest place to contact myself, TwoTwoEleven, is on the [Satisfactory Modding Discord Server](https://discord.gg/TShj39G).  My tag over there is @TwoTwoEleven so I'm pretty easy to find.  I prefer contact in the appropriate channel rather than DMs so that as many people can benefit from the questions and answers as possible.
+
+## Micro Manage Team
+
+TwoTwoEleven - Creator/Programmer
+Deantendo - UI/UX
+
+## Disclaimer
+
+This software is provided by the author "as is". In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any 
+theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
