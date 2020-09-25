@@ -29,8 +29,8 @@ The easiest place to contact myself, TwoTwoEleven, is on the [Satisfactory Moddi
 
 ## Micro Manage Team
 
-TwoTwoEleven - Creator/Programmer
-Deantendo - UI/UX
+- TwoTwoEleven - Creator/Programmer
+- Deantendo - UI/UX
 
 ## Disclaimer
 
